@@ -55,9 +55,6 @@ def assign_default_staff(user):
 # ==========================================
 
 def bingo_publico(request):
-
-
-def bingo_publico(request):
     # Traemos los bingos que están por jugarse o en vivo (Para vender/promocionar)
     bingos_activos = Bingo.objects.filter(
         estadobingo__in=['Programado', 'En Curso']
