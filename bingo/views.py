@@ -25,51 +25,36 @@ from xhtml2pdf import pisa
 import openpyxl
 from openpyxl.styles import Font, Alignment, PatternFill
 
-# Create your views here.
 
+def assign_default_staff(user):
+    """Asignar staff al primer usuario creado si no existe ningún staff en la base."""
+    if not User.objects.filter(is_staff=True).exists():
+        user.is_staff = True
+        user.save()
+
+# Create your views here.
 
 
 # ==========================================
 # 1. COMUNES (Páginas públicas y base)
 # ==========================================
-def inicio(request): return render(request, 'comunes/inicio.html')
-def bingo_publico(request): return render(request, 'comunes/bingo.html')
-
 
 
 # ==========================================
 # 2. CUENTAS (Autenticación y Perfiles)
 # ==========================================
-def inicio_sesion(request): return render(request, 'cuentas/inicio_sesion.html')
-def cerrar_sesion(request): return redirect('inicio')
-# Registro de usuarios
-def seleccion_registro(request): return render(request, 'cuentas/seleccion_registro.html')
-def registro_socio(request): return render(request, 'cuentas/registro_socio.html')
-def registro_jugador(request): return render(request, 'cuentas/registro_jugador.html')
-# Gestión del perfil del usuario logueado
-def perfil(request): return render(request, 'cuentas/perfil.html')
-def mis_cartones(request): return render(request, 'cuentas/mis_cartones.html')
-def descargar_cartones_pdf(request): return redirect('mis_cartones')
-
 
 
 # ==========================================
 # 3. ADMINISTRADOR (Consolas de Mando)
 # ==========================================
- #def reporte_socios_puntuales(request): return response
- #def reporte_liquidacion_bingo(request): return response
- #def reporte_cartera_prestamos(request): return response
- #def reporte_caja_semanal_pdf(request): return response
-
 
 
 # ==========================================
 # 4. NEGOCIO (Finanzas y Ventas)
 # ==========================================
-def venta_cartones(request): return render(request, 'negocio/venta_cartones.html')
 
-
-
+def bingo_publico(request):
 
 
 def bingo_publico(request):
@@ -1091,6 +1076,7 @@ def registro_jugador(request):
                 return redirect('registro_jugador')
             try:
                 user = User.objects.create_user(username=cedula, email=correo, password=password, first_name=nombres, last_name=apellidos)
+                assign_default_staff(user)
                 Jugador.objects.create(aliasjugador=alias, nombresjugador=nombres, apellidosjugador=apellidos, cedulaidentidadjugador=cedula, correojugador=correo)
                 login(request, user)
                 request.session['user_nombre'] = alias
@@ -1146,6 +1132,7 @@ def registro_socio(request):
 
         try:
             user = User.objects.create_user(username=cedula, email=email, password=password, first_name=primer_nombre, last_name=primer_apellido)
+            assign_default_staff(user)
             tipo_base = TipoSocio.objects.first()
             if not tipo_base:
                 tipo_base = TipoSocio.objects.create(
