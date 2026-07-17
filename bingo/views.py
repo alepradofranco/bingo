@@ -986,6 +986,12 @@ def perfil(request):
                 try:
                     fecha_nac = datetime.strptime(fecha_nacimiento_str, '%Y-%m-%d').date()
                     tipo_base = TipoSocio.objects.first()
+                    if not tipo_base:
+                        tipo_base = TipoSocio.objects.create(
+                            nombretiposocio='Socio Básico',
+                            roltiposocio='Socio',
+                            descripciondetiposocio='Tipo de socio por defecto'
+                        )
                     
                     # 1. Creamos el Socio con los datos EXACTOS y legales que el usuario llenó
                     nuevo_socio = Socio.objects.create(
@@ -1142,10 +1148,12 @@ def registro_socio(request):
             user = User.objects.create_user(username=cedula, email=email, password=password, first_name=primer_nombre, last_name=primer_apellido)
             tipo_base = TipoSocio.objects.first()
             if not tipo_base:
-                user.delete() 
-                messages.error(request, "Error crítico: No hay 'Tipos de Socio'.")
-                return redirect('registro_socio')
-            
+                tipo_base = TipoSocio.objects.create(
+                    nombretiposocio='Socio Básico',
+                    roltiposocio='Socio',
+                    descripciondetiposocio='Tipo de socio por defecto'
+                )
+
             Socio.objects.create(
                 idtiposocio=tipo_base, primernombresocio=primer_nombre, segundonombresocio=segundo_nombre,
                 primerapellidosocio=primer_apellido, segundoapellidosocio=segundo_apellido, cisocio=cedula,
