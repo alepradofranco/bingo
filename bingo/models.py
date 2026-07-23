@@ -5,7 +5,9 @@ from datetime import date
 from django.db.models import Q
 from django.core.validators import MinValueValidator, MaxValueValidator
 from decimal import Decimal
-
+from django.core.validators import MinValueValidator
+from decimal import Decimal
+from django.db import models
 
 
 class TipoSocio(models.Model):
@@ -678,6 +680,7 @@ class Jugador(models.Model):
 
 
 class PartidaBingo(models.Model):
+
     ESTADO_PARTIDA_CHOICES = [
         ('En Juego', 'En Juego'),
         ('Verificando', 'Verificando'),
@@ -703,6 +706,20 @@ class PartidaBingo(models.Model):
         max_length=100, 
         verbose_name="Nombre de la Ronda"
     )
+    modalidad_victoria = models.CharField(
+        max_length=50,
+        verbose_name="Modalidad de Victoria",
+        null=True,
+        blank=True
+    )
+    valorpremio = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        verbose_name="Valor del Premio",
+        null=True,
+        blank=True
+    )
+
     valorefectivo = models.DecimalField(
         max_digits=10, 
         decimal_places=2,
