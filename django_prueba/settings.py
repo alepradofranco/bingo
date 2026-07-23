@@ -34,6 +34,7 @@ ALLOWED_HOSTS = [h.strip() for h in os.environ.get("ALLOWED_HOSTS", "").split(",
 # Application definition
 
 INSTALLED_APPS = [
+    'django_extensions',
     'daphne',
     'channels',
     'django.contrib.admin',
